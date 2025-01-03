@@ -18,7 +18,7 @@ import numpy as np
 
 from turtlemd.potentials.potential import Potential
 from turtlemd.system.system import System
-
+from typing import Tuple, Dict
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
 
@@ -71,7 +71,7 @@ class DoubleWell(Potential):
         )
         return v_pot.sum()
 
-    def force(self, system: System) -> tuple[np.ndarray, np.ndarray]:
+    def force(self, system: System) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate the force for the 1D double well."""
         pos = system.particles.pos
         forces = -4.0 * (self.params["a"] * pos**3) + 2.0 * (
@@ -129,7 +129,7 @@ class RectangularWell(Potential):
         )
         return v_pot.sum()
 
-    def force(self, system: System) -> tuple[np.ndarray, np.ndarray]:
+    def force(self, system: System) -> Tuple[np.ndarray, np.ndarray]:
         """Not implemented, just return zeros."""
         LOGGER.warning("Calling force for %s is not implemented!", self.desc)
         force = np.zeros_like(system.particles.force)
@@ -172,11 +172,11 @@ class DoubleWellPair(Potential):
             the potential is active for.
     """
 
-    types: tuple[int, int]
+    types: Tuple[int, int]
 
     def __init__(
         self,
-        types: tuple[int, int],
+        types: Tuple[int, int],
         dim: int = 3,
         desc: str = "A double well pair potential",
     ):
@@ -192,7 +192,7 @@ class DoubleWellPair(Potential):
         }
         self.types = types
 
-    def set_parameters(self, parameters: dict[str, float]):
+    def set_parameters(self, parameters: Dict[str, float]):
         """Add new potential parameters to the potential.
 
         Args:
@@ -211,7 +211,7 @@ class DoubleWellPair(Potential):
         self.params["rwidth"] = self.params["rzero"] + self.params["width"]
         self.params["height4"] = 4.0 * self.params["height"]
 
-    def min_max(self) -> tuple[float, float, float]:
+    def min_max(self) -> Tuple[float, float, float]:
         """Return the minima & maximum of the potential.
 
         The minima are located at ``rzero`` & ``rzero + 2*width``.
@@ -259,7 +259,7 @@ class DoubleWellPair(Potential):
         height = self.params["height"]
         return height * (1.0 - (((delr - rwidth) ** 2) / width2)) ** 2
 
-    def force(self, system: System) -> tuple[np.ndarray, np.ndarray]:
+    def force(self, system: System) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate the force on the particles."""
         particles = system.particles
         box = system.box

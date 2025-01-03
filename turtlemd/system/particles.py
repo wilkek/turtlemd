@@ -3,8 +3,7 @@
 Tha particle list collects the mass, positions, velocities,
 forces, types, etc. for a collection of particles.
 """
-from collections.abc import Iterator
-from typing import SupportsIndex
+from typing import SupportsIndex, Optional, Union, List, Dict, Iterator, Tuple
 
 import numpy as np
 from numpy.random import Generator
@@ -19,7 +18,7 @@ class Particles:
     vel: np.ndarray  # Velocities for the particles
     force: np.ndarray  # Force on the particles
     virial: np.ndarray  # Virial for the particles
-    v_pot: float | None  # The potential energy of the particles.
+    v_pot: Optional[float]  # The potential energy of the particles.
     mass: np.ndarray  # The mass of the particles
     imass: np.ndarray  # The inverse mass of the particles
     name: np.ndarray  # Names of the particles
@@ -49,9 +48,9 @@ class Particles:
 
     def add_particle(
         self,
-        pos: np.ndarray | list[float],
-        vel: np.ndarray | None = None,
-        force: np.ndarray | None = None,
+        pos: Union[np.ndarray, List[float]],
+        vel: Optional[np.ndarray] = None,
+        force: Optional[np.ndarray] = None,
         mass: float = 1.0,
         name: str = "?",
         ptype: int = 1,
@@ -78,7 +77,7 @@ class Particles:
         self.imass = 1.0 / self.mass
         self.npart += 1
 
-    def __iter__(self) -> Iterator[dict]:
+    def __iter__(self) -> Iterator[Dict]:
         """Yield the properties of the particles.
 
         Yields:
@@ -100,7 +99,7 @@ class Particles:
         """Just give the number of particles."""
         return self.npart
 
-    def __getitem__(self, key: SupportsIndex | tuple[SupportsIndex, ...]):
+    def __getitem__(self, key: Union[SupportsIndex, Tuple[SupportsIndex, ...]]):
         """Support slicing for particles."""
         part = Particles(dim=self.dim)
         part.pos = self.pos[key]
@@ -117,7 +116,7 @@ class Particles:
         part.npart = len(part.name)
         return part
 
-    def pairs(self) -> Iterator[tuple[int, int, int, int]]:
+    def pairs(self) -> Iterator[Tuple[int, int, int, int]]:
         """Iterate over all pairs of particles.
 
         Yields:
@@ -137,7 +136,7 @@ def linear_momentum(particles: Particles) -> np.ndarray:
     return np.sum(particles.vel * particles.mass, axis=0)
 
 
-def zero_momentum(particles: Particles, dim: list[bool] | None = None):
+def zero_momentum(particles: Particles, dim: Optional[List[bool]] = None):
     """Set the linear momentum for the particles to zero.
 
     Args:
@@ -153,7 +152,7 @@ def zero_momentum(particles: Particles, dim: list[bool] | None = None):
     particles.vel -= mom / particles.mass.sum()
 
 
-def kinetic_energy(particles: Particles) -> tuple[np.ndarray, float]:
+def kinetic_energy(particles: Particles) -> Tuple[np.ndarray, float]:
     """Calculate kinetic energy of the particles.
 
     Returns:
@@ -171,9 +170,9 @@ def kinetic_energy(particles: Particles) -> tuple[np.ndarray, float]:
 def kinetic_temperature(
     particles: Particles,
     boltzmann: float,
-    dof: list[float] | None = None,
-    kin_tensor: np.ndarray | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    dof: Optional[List[float]] = None,
+    kin_tensor: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Calculate the kinetic temperature of a collection of particles.
 
     Args:
@@ -200,8 +199,8 @@ def kinetic_temperature(
 
 
 def pressure_tensor(
-    particles: Particles, volume: float, kin_tensor: np.ndarray | None = None
-) -> tuple[np.ndarray, float]:
+    particles: Particles, volume: float, kin_tensor: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, float]:
     """Calculate the pressure tensor.
 
     The pressure tensor is obtained from the virial the kinetic
@@ -229,7 +228,7 @@ def generate_maxwell_velocities(
     rgen: Generator,
     temperature: float = 1.0,
     boltzmann: float = 1.0,
-    dof: list[float] | None = None,
+    dof: Optional[List[float]] = None,
     momentum: bool = True,
 ):
     """Generate velocities from a Maxwell distribution.

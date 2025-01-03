@@ -1,7 +1,7 @@
 """Module defining a Lennard-Jones pair potential."""
 import itertools
 import logging
-from typing import Any
+from typing import Any, Dict, Tuple
 
 import numpy as np
 
@@ -50,12 +50,12 @@ class LennardJonesCut(Potential):
     """
 
     shift: bool
-    _lj1: dict[tuple[int, int], float]
-    _lj2: dict[tuple[int, int], float]
-    _lj3: dict[tuple[int, int], float]
-    _lj4: dict[tuple[int, int], float]
-    _offset: dict[tuple[int, int], float]
-    _rcut2: dict[tuple[int, int], float]
+    _lj1: Dict[Tuple[Any, Any], float]
+    _lj2: Dict[Tuple[Any, Any], float]
+    _lj3: Dict[Tuple[Any, Any], float]
+    _lj4: Dict[Tuple[Any, Any], float]
+    _offset: Dict[Tuple[Any, Any], float]
+    _rcut2: Dict[Tuple[Any, Any], float]
 
     def __init__(
         self,
@@ -84,7 +84,7 @@ class LennardJonesCut(Potential):
         self.params = {}
         self.mixing = mixing
 
-    def set_parameters(self, parameters: dict[Any, dict[str, float]]):
+    def set_parameters(self, parameters: Dict[Any, Dict[str, float]]):
         """Set and update parameters.
 
         Args:
@@ -295,8 +295,8 @@ def _check_cutoff(rcut2, rsq, jtype, itype):
 
 
 def generate_pair_interactions(
-    parameters: dict[Any, dict[str, float]], mixing: str
-) -> dict[tuple[int, int], dict[str, float]]:
+    parameters: Dict[Any, Dict[str, float]], mixing: str
+) -> Dict[Tuple[int, int], Dict[str, float]]:
     """Generate pair parameters from atom parameters.
 
     The parameters are given as a dictionary where the keys are
@@ -370,7 +370,7 @@ def mix_parameters(
     sigma_j: float,
     rcut_j: float,
     mixing: str = "geometric",
-) -> tuple[float, float, float]:
+) -> Tuple[float, float, float]:
     r"""Calculate parameters according to the mixing rule.
 
     The available mixing rules are:

@@ -8,6 +8,7 @@ from turtlemd.potentials.well import DoubleWellPair
 from turtlemd.system.box import Box
 from turtlemd.system.particles import Particles
 from turtlemd.system.system import System
+from typing import List, Optional
 
 CORRECT_FORCE = np.array([-2416.67712532, -2416.67712532, -2416.67712532])
 CORRECT_VIRIAL = np.ones((3, 3)) * 483.33542506
@@ -32,7 +33,7 @@ PARAMETERS = {
 }
 
 
-def create_system(pos: list[list[float]] | None = None) -> System:
+def create_system(pos: Optional[List[List[float]]] = None) -> System:
     """Create a test system."""
     box = Box(high=[10, 10, 10])
     system = System(box=box, particles=Particles(dim=box.dim))

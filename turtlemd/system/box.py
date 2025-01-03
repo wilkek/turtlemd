@@ -4,15 +4,16 @@ import logging
 from abc import ABC, abstractmethod
 
 import numpy as np
+from typing import List, Union
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
 
 
 def guess_dimensionality(
-    low: np.ndarray | list[float] | list[int] | None = None,
-    high: np.ndarray | list[float] | list[int] | None = None,
-    periodic: list[bool] | None = None,
+    low: Union[np.ndarray, List[float], List[int], None] = None,
+    high: Union[np.ndarray, List[float], List[int], None] = None,
+    periodic: Union[List[bool], None] = None,
 ) -> int:
     """Figure out the number of dimensions from the box input."""
     dims = []
@@ -107,7 +108,7 @@ class BoxBase(ABC):
 
     dim: int
     dof: np.ndarray
-    periodic: list[bool]
+    periodic: List[bool]
     box_matrix: np.ndarray
     low: np.ndarray
     high: np.ndarray
@@ -117,9 +118,9 @@ class BoxBase(ABC):
     def __init__(
         self,
         dim: int,
-        periodic: list[bool] | None,
-        low: np.ndarray | list[float] | list[int] | None = None,
-        high: np.ndarray | list[float] | list[int] | None = None,
+        periodic: Union[List[bool], None],
+        low: Union[np.ndarray, List[float], List[int], None] = None,
+        high: Union[np.ndarray, List[float], List[int], None] = None,
     ) -> None:
         """Create a generic box.
 
@@ -195,12 +196,12 @@ class TriclinicBox(BoxBase):
 
     def __init__(
         self,
-        low: np.ndarray | list[float] | list[int] | None = None,
-        high: np.ndarray | list[float] | list[int] | None = None,
-        periodic: list[bool] | None = None,
-        alpha: float | None = None,
-        beta: float | None = None,
-        gamma: float | None = None,
+        low: Union[np.ndarray, List[float], List[int], None] = None,
+        high: Union[np.ndarray, List[float], List[int], None] = None,
+        periodic: Union[List[bool], None] = None,
+        alpha: Union[float, None] = None,
+        beta: Union[float, None] = None,
+        gamma: Union[float, None] = None,
     ):
         """Create the box."""
         super().__init__(
@@ -323,9 +324,9 @@ class Box(BoxBase):
 
     def __init__(
         self,
-        low: np.ndarray | list[float] | list[int] | None = None,
-        high: np.ndarray | list[float] | list[int] | None = None,
-        periodic: list[bool] | None = None,
+        low: Union[np.ndarray, List[float], List[int], None] = None,
+        high: Union[np.ndarray, List[float], List[int], None] = None,
+        periodic: Union[List[bool], None] = None,
     ):
         """Create the box."""
         super().__init__(

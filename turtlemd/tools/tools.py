@@ -2,6 +2,7 @@
 import itertools
 
 import numpy as np
+from typing import List, Tuple, Union
 
 UNIT_CELL = {
     "sc": np.array([[0.0, 0.0, 0.0]]),
@@ -36,10 +37,10 @@ UNIT_CELL = {
 
 def generate_lattice(
     lattice: str = "fcc",
-    repeat: list[int] | None = None,
-    lattice_constant: float | None = None,
-    density: float | None = None,
-) -> tuple[np.ndarray, np.ndarray]:
+    repeat: Union[List[int], None] = None,
+    lattice_constant: Union[float, None] = None,
+    density: Union[float, None] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
     """Generate points on a simple lattice.
 
     The lattice is one of the items in `UNIT_CELL`. The lattice is

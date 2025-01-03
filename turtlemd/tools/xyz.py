@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from turtlemd.system.particles import Particles
+from typing import Union
+from typing import Union, Iterator
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -15,15 +17,14 @@ LOGGER.addHandler(logging.NullHandler())
 @dataclass
 class Snapshot:
     """Store coordinates and atoms for a snapshot."""
-
     natoms: int = 0
     comment: str = ""
-    atoms: list[str] = field(default_factory=list)
-    _xyz: list[list[float]] = field(default_factory=list)
+    atoms: list = field(default_factory=list)
+    _xyz: list = field(default_factory=list)
     xyz: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
-def read_xyz_file(filename: str | pathlib.Path) -> Iterator[Snapshot]:
+def read_xyz_file(filename: Union[str, pathlib.Path]) -> Iterator[Snapshot]:
     """Read configurations from a xyz-file"""
 
     lines_to_read = 0
@@ -62,9 +63,9 @@ def read_xyz_file(filename: str | pathlib.Path) -> Iterator[Snapshot]:
 
 
 def particles_from_xyz_file(
-    filename: str | pathlib.Path,
+    filename: Union[str, pathlib.Path],
     dim: int = 3,
-    masses: dict[str, float] | None = None,
+    masses: Union[dict, None] = None,
 ) -> Particles:
     """Create particles from a given xyz-file.
 

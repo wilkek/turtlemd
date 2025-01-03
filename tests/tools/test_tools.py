@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-
 from turtlemd.tools.tools import UNIT_CELL, generate_lattice
 
 CORRECT_XYZ = {

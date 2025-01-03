@@ -2,7 +2,7 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-
+from typing import Optional, List, Tuple
 import numpy as np
 from numpy.random import Generator, default_rng
 
@@ -38,7 +38,7 @@ class Verlet(MDIntegrator):
 
     timestep_squared: float  # Squared time step.
     half_idt: float  # Half of the inverse of the time step.
-    previous_pos: np.ndarray | None  # Positions at the previous step.
+    previous_pos: Optional[np.ndarray]  # Positions at the previous step.
 
     def __init__(self, timestep: float):
         super().__init__(
@@ -111,10 +111,9 @@ class LangevinOverdamped(MDIntegrator):
     .. _overdamped:
         https://en.wikipedia.org/wiki/Brownian_dynamics
     """
-
     gamma: float  # The gamma parameter
-    sigma: np.ndarray | float  # Standard deviation for random numbers
-    bddt: np.ndarray | float  # The factor dt/(m*gamma)
+    sigma: Optional[np.ndarray]  # Standard deviation for random numbers
+    bddt: Optional[np.ndarray]  # The factor dt/(m*gamma)
     rgen: Generator  # The random number generator to use here
     beta: float  # The kB*T factor
     _initiate: bool  # If True, we still need to set some parameters
@@ -172,9 +171,9 @@ class LangevinParameter:
     a2: np.ndarray = field(default_factory=lambda: np.zeros(1))
     b1: np.ndarray = field(default_factory=lambda: np.zeros(1))
     b2: np.ndarray = field(default_factory=lambda: np.zeros(1))
-    mean: list[np.ndarray] = field(default_factory=list)
-    cov: list[np.ndarray] = field(default_factory=list)
-    cho: list[np.ndarray] = field(default_factory=list)
+    mean: List[np.ndarray] = field(default_factory=list)
+    cov: List[np.ndarray] = field(default_factory=list)
+    cho: List[np.ndarray] = field(default_factory=list)
 
 
 class LangevinInertia(MDIntegrator):
@@ -203,7 +202,7 @@ class LangevinInertia(MDIntegrator):
         timestep: float,
         gamma: float,
         beta: float,
-        rgen: Generator | None = None,
+        rgen: Optional[Generator] = None,
         seed: int = 0,
     ):
         super().__init__(
@@ -283,7 +282,7 @@ class LangevinInertia(MDIntegrator):
 
     def draw_random_numbers(
         self, system: System
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """This method draws random numbers for the integration step."""
         particles = system.particles
         dim = particles.dim
